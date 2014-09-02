@@ -383,6 +383,7 @@ public class StopInfo extends Activity implements LocationListener, DialogInterf
 		}
 		AnalyticsUtils.trackPageView(this, TRACKER_TAG);
 		AdsUtils.setupAd(this);
+		AdsUtils.resumeAd(this);
 		refreshFavoriteIDsFromDB();
 		setStopFromIntent(getIntent(), null);
 		setIntent(null); // set intent as processed
@@ -403,6 +404,7 @@ public class StopInfo extends Activity implements LocationListener, DialogInterf
 			this.compassUpdatesEnabled = false;
 		}
 		this.adapter.onPause();
+		AdsUtils.pauseAd(this);
 		super.onPause();
 	}
 
@@ -935,9 +937,13 @@ public class StopInfo extends Activity implements LocationListener, DialogInterf
 
 			@Override
 			protected Boolean doInBackground(String... params) {
-				isNewStop = StopInfo.this.routeTripStop == null || StopInfo.this.routeTripStop.stop == null || StopInfo.this.routeTripStop.stop.id != newStopId
-						|| StopInfo.this.routeTripStop.route == null || StopInfo.this.routeTripStop.route.id != newRouteId
-						|| StopInfo.this.routeTripStop.trip == null || StopInfo.this.routeTripStop.trip.id != newTripId;
+				isNewStop = StopInfo.this.routeTripStop == null //
+						|| StopInfo.this.routeTripStop.stop == null //
+						|| StopInfo.this.routeTripStop.stop.id != newStopId //
+						|| StopInfo.this.routeTripStop.route == null //
+						|| StopInfo.this.routeTripStop.route.id != newRouteId //
+						|| StopInfo.this.routeTripStop.trip == null //
+						|| StopInfo.this.routeTripStop.trip.id != newTripId;
 				if (isNewStop) {
 					RouteTripStop newRouteTripStop = null; // reset
 					Uri contentUri = Utils.newContentUri(newAuthority);
@@ -1436,28 +1442,41 @@ public class StopInfo extends Activity implements LocationListener, DialogInterf
 
 	private SpannableStringBuilder getMessageSb(StopTimes hours) {
 		MyLog.v(TAG, "getMessageSb()");
+		final String lineBreak = "<br />"; // "\n";
 		SpannableStringBuilder messageSb = new SpannableStringBuilder();
 		if (hours != null) {
 			if (!TextUtils.isEmpty(hours.getError())) {
 				// MyLog.d(TAG, "getMessageSb() > hours.getError(): " + hours.getError());
 				if (messageSb.length() > 0) {
-					messageSb.append('\n');
+					messageSb.append(lineBreak).append(lineBreak);
 				}
-				messageSb.append(hours.getError().replaceAll("\\.\\ ", ".\n").replaceAll("\\:\\ ", ":\n"));
+				messageSb.append(hours.getError() //
+						.replaceAll("\\.\\ ", "." + lineBreak) // .
+						.replaceAll("\\:\\ ", ":" + lineBreak) // :
+						.replaceAll("\\),\\ ", "\\)," + lineBreak) // ),
+						);
 			}
 			if (!TextUtils.isEmpty(hours.getMessage())) {
 				// MyLog.d(TAG, "getMessageSb() > hours.getMessage(): " + hours.getMessage());
 				if (messageSb.length() > 0) {
-					messageSb.append('\n');
+					messageSb.append(lineBreak).append(lineBreak);
 				}
-				messageSb.append(hours.getMessage().replaceAll("\\.\\ ", ".\n").replaceAll("\\:\\ ", ":\n"));
+				messageSb.append(hours.getMessage() //
+						.replaceAll("\\.\\ ", "." + lineBreak) // .
+						.replaceAll("\\:\\ ", ":" + lineBreak) // :
+						.replaceAll("\\),\\ ", "\\)," + lineBreak) // ),
+						);
 			}
 			if (!TextUtils.isEmpty(hours.getMessage2())) {
 				// MyLog.d(TAG, "getMessageSb() > hours.getMessage2(): " + hours.getMessage2());
 				if (messageSb.length() > 0) {
-					messageSb.append('\n');
+					messageSb.append(lineBreak).append(lineBreak);
 				}
-				messageSb.append(hours.getMessage2().replaceAll("\\.\\ ", ".\n").replaceAll("\\:\\ ", ":\n"));
+				messageSb.append(hours.getMessage2() //
+						.replaceAll("\\.\\ ", "." + lineBreak) // .
+						.replaceAll("\\:\\ ", ":" + lineBreak) // :
+						.replaceAll("\\),\\ ", "\\)," + lineBreak) // ),
+						);
 			}
 		}
 		// MyLog.d(TAG, "getMessageSb() > messageSb: " + messageSb);
