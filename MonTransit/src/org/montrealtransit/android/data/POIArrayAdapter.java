@@ -150,7 +150,7 @@ public class POIArrayAdapter extends ArrayAdapter<POI> implements CompassListene
 
 	@Override
 	public int getViewTypeCount() {
-		return 3;
+		return 2;
 	}
 
 	@Override
@@ -397,7 +397,7 @@ public class POIArrayAdapter extends ArrayAdapter<POI> implements CompassListene
 		}
 		List<POI> orderedPois = new ArrayList<POI>(this.pois);
 		// order the POIs list by distance (closest first)
-		Collections.sort(orderedPois, new POI.POIDistanceComparator());
+		Collections.sort(orderedPois, POI.POI_DISTANCE_COMPARATOR);
 		if (orderedPois.get(0).getDistance() > 0) {
 			// MyLog.d(TAG, "updateClosestPoi() > found (%s)", orderedPois.get(0).getUID());
 			this.closestPOI = new Pair<Integer, String>(getItemViewType(orderedPois.get(0)), orderedPois.get(0).getUID());
@@ -444,20 +444,22 @@ public class POIArrayAdapter extends ArrayAdapter<POI> implements CompassListene
 		return -1;
 	}
 
+	@Deprecated
 	public void prefetchClosests() {
-		if (this.pois == null) {
-			return;
-		}
+		// if (this.pois == null) {
+		// return;
+		// }
 		// TODO for (int i = 0; i < this.closestStops.size() && i < 5; i++) {
 		// SupportFactory.get().executeOnExecutor(new LoadNextBusStopIntoCacheTask(getLastActivity(), this.closestStops.get(i), null, true, false),
 		// PrefetchingUtils.getExecutor());
 		// }
 	}
 
+	@Deprecated
 	public void prefetchFavorites() {
-		if (this.pois == null || this.typeFavUIDs == null) {
-			return;
-		}
+		// if (this.pois == null || this.typeFavUIDs == null) {
+		// return;
+		// }
 		// TODO for (String code : this.favStopCodes) {
 		// RouteTripStop routeTripStop = new RouteTripStop(null, null, null);
 		// routeTripStop.stop.code = code;
@@ -505,7 +507,7 @@ public class POIArrayAdapter extends ArrayAdapter<POI> implements CompassListene
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		setScrollState(this.scrollState);
+		setScrollState(scrollState);
 	}
 
 	@Override
